@@ -33,4 +33,5 @@ bucket_path: docker-multi
 on:
 branch: master
 access_key_id: $AWS_ACCESS_KEY 
-secrest_access-key: $AWS_SECRET_KEY
+secrest_access-key: 
+    secure: $AWS_SECRET_KEY
