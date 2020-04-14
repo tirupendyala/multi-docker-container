@@ -1,0 +1,36 @@
+{
+    "AWSEBDockerversion": 2,
+    "containerDefinitions": [
+        {
+            "name": "client",
+            "image": "tirupendyala/multi-client",
+            "hostname": "client",
+            "essential": false
+        },
+        {
+            "name": "server",
+            "image": "tirupendyala/multi-server",
+            "hostname": "api",
+            "essential": false
+        },
+        {
+            "name": "worker",
+            "image": "tirupendyala/multi-worker",
+            "hostname": "worker",
+            "essential": false
+        },
+        {
+            "name": "nginx",
+            "image": "tirupendyala/multi-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "portmappings": [
+                {
+                    "hostport": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": [ "client", "server"]
+        }
+    ]
+}

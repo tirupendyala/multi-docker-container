@@ -1,0 +1,36 @@
+sudo: required
+services:
+- docker
+
+before_install:
+- docker build -t tirupendyala/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+- docker run -e CI=true tirupendyala/react-test npm test
+
+after_success:
+- docker build -t tirupendyala/multi-client ./client
+- docker build -t tirupendyala/multi-nginx ./nginx
+- docker build -t tirupendyala/multi-server ./server
+- docker build -t tirupendyala/multi-worker ./worker
+# to login into the Travis-ci 
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+# to push the above build images to docker hub
+- docker push tirupendyala/multi-client
+- docker push tirupendyala/multi-nginx
+- docker push tirupendyala/multi-server
+- docker push tirupendyala/multi-worker
+
+deploy:
+edge: true
+provider: elasticbeanstalk
+region: eu-central-1
+app: multi-docker
+env: MultiDocker-env
+bucket_name: elasticbeanstalk-eu-central-1-170319090625
+bucket_path: docker-multi
+on:
+branch: master
+access_key_id: $AWS_ACCESS_KEY 
+secrest_access-key: $AWS_SECRET_KEY
